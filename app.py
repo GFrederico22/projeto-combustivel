@@ -1,19 +1,15 @@
 from flask import Flask, render_template
 import psycopg2
+import os
 
 app = Flask(__name__)
 
 def conectar():
     conn = psycopg2.connect(
-        host="localhost",
-        database="postos_gasolina",
-        user="postgres",
-        password="G*07f00o",
-        port="5432",
+        os.environ.get("DATABASE_URL"),
         options="-c client_encoding=UTF8"
     )
     return conn
-
 
 # Página inicial
 @app.route("/")
