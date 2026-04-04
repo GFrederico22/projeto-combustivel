@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Preço Mais Recente</h1>
+
+<table class="table table-dark table-striped">
+<tr>
+<th>Posto</th>
+<th>Combustível</th>
+<th>Preço</th>
+<th>Data</th>
+</tr>
+
+{% for linha in dados %}
+<tr>
+<td>{{ linha[0] }}</td>
+<td>{{ linha[1] }}</td>
+<td>R$ {{ "%.2f"|format(linha[2])|replace('.', ',') }}</td>
+<td>{{ linha[3].strftime('%d/%m/%Y') }}</td>
+</tr>
+{% endfor %}
+
+</table>
+
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1 class="mb-4">Dashboard de Combustíveis</h1>
+
+<div class="row">
+
+<div class="col-md-3">
+<div class="card p-3">
+<h5>Média Geral</h5>
+<h3>R$ {{ media }}</h3>
+</div>
+</div>
+
+<div class="col-md-3">
+<div class="card p-3">
+<h5>Maior Preço</h5>
+<h3>R$ {{ maior }}</h3>
+</div>
+</div>
+
+<div class="col-md-3">
+<div class="card p-3">
+<h5>Menor Preço</h5>
+<h3>R$ {{ menor }}</h3>
+</div>
+</div>
+
+<div class="col-md-3">
+<div class="card p-3">
+<h5>Total Coletas</h5>
+<h3>{{ total }}</h3>
+</div>
+</div>
+
+</div>
+
+{% endblock %}

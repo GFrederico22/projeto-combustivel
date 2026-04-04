@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Evolução de Preços</h1>
+
+<div class="card p-3 mb-4">
+<canvas id="grafico"></canvas>
+</div>
+
+<table class="table table-dark table-striped">
+<tr>
+<th>Combustível</th>
+<th>Preço</th>
+<th>Data</th>
+</tr>
+
+{% for linha in dados %}
+<tr>
+<td>{{ linha[0] }}</td>
+<td>R$ {{ "%.2f"|format(linha[1])|replace('.', ',') }}</td>
+<td>{{ linha[2] }}</td>
+</tr>
+{% endfor %}
+
+</table>
+
+<script>
+
+var dadosGrafico = JSON.parse('{{ dados | tojson | safe }}');
+
+var labels = dadosGrafico.map(function(item){
+return item[2];
+});
+
+var valores = dadosGrafico.map(function(item){
+return item[1];
+});
+
+new Chart(document.getElementById("grafico"), {
+type: "bar",
+data: {
+labels: labels,
+datasets: [{
+label: "Preço",
+data: valores,
+backgroundColor: "rgba(59,130,246,0.7)"
+}]
+}
+});
+
+</script>
+
+{% endblock %}

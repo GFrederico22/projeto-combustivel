@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Média por Posto</h1>
+
+<input class="form-control mb-3" id="filtro" placeholder="Filtrar posto...">
+
+<table class="table table-dark table-striped" id="tabela">
+<tr>
+<th>Posto</th>
+<th>Combustível</th>
+<th>Média</th>
+<th>Coletas</th>
+</tr>
+
+{% for linha in dados %}
+<tr>
+<td>{{ linha[0] }}</td>
+<td>{{ linha[1] }}</td>
+<td>R$ {{ "%.2f"|format(linha[2])|replace('.', ',') }}</td>
+<td>{{ linha[3] }}</td>
+</tr>
+{% endfor %}
+
+</table>
+
+<script>
+
+const filtro = document.getElementById("filtro");
+
+filtro.addEventListener("keyup", function(){
+
+let linhas = document.querySelectorAll("#tabela tr");
+
+linhas.forEach(function(linha, index){
+
+if(index === 0) return;
+
+let texto = linha.innerText.toLowerCase();
+let busca = filtro.value.toLowerCase();
+
+linha.style.display = texto.includes(busca) ? "" : "none";
+
+});
+
+});
+
+</script>
+
+{% endblock %}
