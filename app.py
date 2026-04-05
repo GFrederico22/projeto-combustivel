@@ -33,13 +33,24 @@ def index():
     cursor.close()
     conn.close()
 
+    if dados:
+        media = round(dados[0], 2) if dados[0] else 0
+        maior = round(dados[1], 2) if dados[1] else 0
+        menor = round(dados[2], 2) if dados[2] else 0
+        total = dados[3] if dados[3] else 0
+    else:
+        media = 0
+        maior = 0
+        menor = 0
+        total = 0
+
     return render_template(
         "index.html",
-        media=round(dados[0],2),
-        maior=round(dados[1],2),
-        menor=round(dados[2],2),
-        total=dados[3]
-    )
+        media=media,
+        maior=maior,
+        menor=menor,
+        total=total
+)
 
 
 # 1 - Menor e maior preço
