@@ -4,7 +4,7 @@
 
 <h1>Evolução de Preços por Posto</h1>
 
-<div class="card p-3 mb-4">
+<div style="height:500px;">
 <canvas id="grafico"></canvas>
 </div>
 
@@ -31,8 +31,8 @@
 
 var dadosGrafico = JSON.parse('{{ dados | tojson | safe }}');
 
-var datasets = {};
 var labels = [];
+var datasets = {};
 
 dadosGrafico.forEach(function(item){
 
@@ -41,6 +41,10 @@ var combustivel = item[1];
 var valor = item[2];
 var data = item[3];
 
+if(!labels.includes(data)){
+labels.push(data);
+}
+
 var chave = posto + " - " + combustivel;
 
 if(!datasets[chave]){
@@ -48,32 +52,54 @@ datasets[chave] = {
 label: chave,
 data: [],
 borderWidth: 2,
-fill: false
+fill: false,
+tension: 0.3
 };
 }
 
-datasets[chave].data.push(valor);
+datasets[chave][data] = valor;
 
-if(!labels.includes(data)){
-labels.push(data);
-}
+});
+
+Object.keys(datasets).forEach(function(chave){
+
+var dataArray = [];
+
+labels.forEach(function(data){
+dataArray.push(datasets[chave][data] || null);
+});
+
+datasets[chave].data = dataArray;
 
 });
 
 new Chart(document.getElementById("grafico"), {
+
 type: "line",
+
 data: {
 labels: labels,
 datasets: Object.values(datasets)
 },
+
 options: {
 responsive: true,
+maintainAspectRatio: false,
+
 plugins: {
 legend: {
 position: 'top'
 }
+},
+
+scales: {
+y: {
+beginAtZero: false
 }
 }
+
+}
+
 });
 
 </script>
