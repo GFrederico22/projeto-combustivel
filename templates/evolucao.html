@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<h1>Evolução de Preços</h1>
+<h1>Evolução de Preços por Posto</h1>
 
 <div class="card p-3 mb-4">
 <canvas id="grafico"></canvas>
@@ -10,6 +10,7 @@
 
 <table class="table table-dark table-striped">
 <tr>
+<th>Posto</th>
 <th>Combustível</th>
 <th>Preço</th>
 <th>Data</th>
@@ -18,8 +19,9 @@
 {% for linha in dados %}
 <tr>
 <td>{{ linha[0] }}</td>
-<td>R$ {{ "%.2f"|format(linha[1])|replace('.', ',') }}</td>
-<td>{{ linha[2] }}</td>
+<td>{{ linha[1] }}</td>
+<td>R$ {{ "%.2f"|format(linha[2])|replace('.', ',') }}</td>
+<td>{{ linha[3] }}</td>
 </tr>
 {% endfor %}
 
@@ -29,23 +31,48 @@
 
 var dadosGrafico = JSON.parse('{{ dados | tojson | safe }}');
 
-var labels = dadosGrafico.map(function(item){
-return item[2];
-});
+var datasets = {};
+var labels = [];
 
-var valores = dadosGrafico.map(function(item){
-return item[1];
+dadosGrafico.forEach(function(item){
+
+var posto = item[0];
+var combustivel = item[1];
+var valor = item[2];
+var data = item[3];
+
+var chave = posto + " - " + combustivel;
+
+if(!datasets[chave]){
+datasets[chave] = {
+label: chave,
+data: [],
+borderWidth: 2,
+fill: false
+};
+}
+
+datasets[chave].data.push(valor);
+
+if(!labels.includes(data)){
+labels.push(data);
+}
+
 });
 
 new Chart(document.getElementById("grafico"), {
-type: "bar",
+type: "line",
 data: {
 labels: labels,
-datasets: [{
-label: "Preço",
-data: valores,
-backgroundColor: "rgba(59,130,246,0.7)"
-}]
+datasets: Object.values(datasets)
+},
+options: {
+responsive: true,
+plugins: {
+legend: {
+position: 'top'
+}
+}
 }
 });
 

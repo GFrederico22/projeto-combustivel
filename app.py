@@ -172,12 +172,14 @@ def evolucao():
 
     query = """
     SELECT 
-        c.tipo_combustivel,
+         p.nome_posto,
+         c.tipo_combustivel,
         cp.valor_combustivel,
         cp.data_coleta
     FROM coleta_preco cp
+    JOIN posto p ON cp.id_posto = p.id_posto
     JOIN combustivel c ON cp.id_combustivel = c.id_combustivel
-    ORDER BY cp.data_coleta
+    ORDER BY p.nome_posto, c.tipo_combustivel, cp.data_coleta
     """
 
     cursor.execute(query)
@@ -191,10 +193,11 @@ def evolucao():
 
     for linha in dados:
         dados_convertidos.append([
-            linha[0],
-            float(linha[1]),
-            linha[2].strftime('%d/%m/%Y')
-        ])
+        linha[0],  # posto
+        linha[1],  # combustivel
+        float(linha[2]),  # valor
+        linha[3].strftime('%d/%m/%Y')  # data
+    ])
 
     return render_template("evolucao.html", dados=dados_convertidos)
 
