@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<h2>Menor e Maior Preço por Combustível</h2>
+<h2>Maior e Menor Preço por Posto</h2>
 
 <div class="card p-3 mt-3">
 
@@ -10,11 +10,12 @@
 
 <thead>
 <tr>
+<th>Posto</th>
 <th>Combustível</th>
 <th>Menor Preço</th>
-<th>Posto</th>
+<th>Data</th>
 <th>Maior Preço</th>
-<th>Posto</th>
+<th>Data</th>
 </tr>
 </thead>
 
@@ -26,17 +27,23 @@
 
 <td>{{ linha[0] }}</td>
 
+<td>{{ linha[1] }}</td>
+
 <td class="text-success">
-R$ {{ "%.2f"|format(linha[1])|replace('.', ',') }}
-</td>
-
-<td>{{ linha[2] }}</td>
-
-<td class="text-danger">
 R$ {{ "%.2f"|format(linha[3])|replace('.', ',') }}
 </td>
 
-<td>{{ linha[4] }}</td>
+<td>
+{{ linha[5].strftime('%d/%m/%Y') }}
+</td>
+
+<td class="text-danger">
+R$ {{ "%.2f"|format(linha[2])|replace('.', ',') }}
+</td>
+
+<td>
+{{ linha[4].strftime('%d/%m/%Y') }}
+</td>
 
 </tr>
 

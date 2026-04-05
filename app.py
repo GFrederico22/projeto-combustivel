@@ -62,27 +62,41 @@ def menor_maior():
 
     query = """
     SELECT 
+        p.nome_posto,
         c.tipo_combustivel,
 
-        MIN(cp.valor_combustivel) AS menor_preco,
-        (SELECT p.nome_posto
-         FROM coleta_preco cp2
-         JOIN posto p ON cp2.id_posto = p.id_posto
-         WHERE cp2.id_combustivel = c.id_combustivel
-         ORDER BY cp2.valor_combustivel ASC
-         LIMIT 1) AS posto_menor,
-
         MAX(cp.valor_combustivel) AS maior_preco,
-        (SELECT p.nome_posto
-         FROM coleta_preco cp3
-         JOIN posto p ON cp3.id_posto = p.id_posto
-         WHERE cp3.id_combustivel = c.id_combustivel
-         ORDER BY cp3.valor_combustivel DESC
-         LIMIT 1) AS posto_maior
+        MIN(cp.valor_combustivel) AS menor_preco,
+
+        MAX(cp.data_coleta) FILTER (
+            WHERE cp.valor_combustivel = (
+                SELECT MAX(cp2.valor_combustivel)
+                FROM coleta_preco cp2
+                WHERE cp2.id_posto = cp.id_posto 
+                AND cp2.id_combustivel = cp.id_combustivel
+            )
+        ) AS data_maior,
+
+        MAX(cp.data_coleta) FILTER (
+            WHERE cp.valor_combustivel = (
+                SELECT MIN(cp2.valor_combustivel)
+                FROM coleta_preco cp2
+                WHERE cp2.id_posto = cp.id_posto 
+                AND cp2.id_combustivel = cp.id_combustivel
+            )
+        ) AS data_menor
 
     FROM coleta_preco cp
+    JOIN posto p ON cp.id_posto = p.id_posto
     JOIN combustivel c ON cp.id_combustivel = c.id_combustivel
-    GROUP BY c.tipo_combustivel, c.id_combustivel
+
+    GROUP BY 
+        p.nome_posto,
+        c.tipo_combustivel
+
+    ORDER BY 
+        p.nome_posto,
+        c.tipo_combustivel;
     """
 
     cursor.execute(query)
@@ -92,7 +106,6 @@ def menor_maior():
     conn.close()
 
     return render_template("menor_maior.html", dados=dados)
-
 
 # 2 - Média por posto
 @app.route("/media_posto")
